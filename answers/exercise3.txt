@@ -1,0 +1,5 @@
+docker start -ai aecf58c068d7
+root@aecf58c068d7:/# nano /usr/src/app/index.js
+root@aecf58c068d7:/# cat /usr/src/app/index.js
+console.log('Hello World')
+root@aecf58c068d7:/# 

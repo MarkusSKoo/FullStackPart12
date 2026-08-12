@@ -1,0 +1,166 @@
+markuskauhanen@Markus-MacBook-Pro todo-backend % docker container ls 
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                           NAMES
+c26d9231d16b   nginx     "/docker-entrypoint.…"   14 minutes ago   Up 14 minutes   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp         musing_ishizaka
+79ec17206e63   mongo     "docker-entrypoint.s…"   47 minutes ago   Up 47 minutes   0.0.0.0:3456->27017/tcp, [::]:3456->27017/tcp   todo-backend-mongo-1
+markuskauhanen@Markus-MacBook-Pro todo-backend % docker exec -it todo-backend-mongo-1 
+docker: 'docker exec' requires at least 2 arguments
+
+Usage:  docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+See 'docker exec --help' for more information
+markuskauhanen@Markus-MacBook-Pro todo-backend % docker exec -it todo-backend-mongo-1 bash
+root@79ec17206e63:/# mongosh
+Current Mongosh Log ID:	6a7b11094b6a9fc415db7b9f
+Connecting to:		mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.9.2
+Using MongoDB:		undefined
+Using Mongosh:		2.9.2
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+
+To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+You can opt-out by running the disableTelemetry() command.
+
+test> show dbs
+MongoServerError[Unauthorized]: Command listDatabases requires authentication
+test> -u root -p example
+Uncaught:
+SyntaxError: Missing semicolon. (1:2)
+
+> 1 | -u root -p example
+    |   ^
+  2 |
+
+test> mongosh -u root -p example
+Uncaught:
+SyntaxError: Missing semicolon. (1:10)
+
+> 1 | mongosh -u root -p example
+    |           ^
+  2 |
+
+test> disableTelemetry()
+Telemetry is now disabled.
+test> -u root -p example
+Uncaught:
+SyntaxError: Missing semicolon. (1:2)
+
+> 1 | -u root -p example
+    |   ^
+  2 |
+
+test> exit
+root@79ec17206e63:/# mongosh -u root -p
+Enter password: *******
+Current Mongosh Log ID:	6a7b124db0d41a9467f5b213
+Connecting to:		mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.9.2
+Using MongoDB:		8.2.12
+Using Mongosh:		2.9.2
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2026-08-11T11:20:47.799+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+   2026-08-11T11:20:48.065+00:00: For customers running the current memory allocator, we suggest changing the contents of the following sysfsFile
+   2026-08-11T11:20:48.065+00:00: We suggest setting the contents of sysfsFile to 0.
+   2026-08-11T11:20:48.065+00:00: We suggest setting swappiness to 0 or 1, as swapping can cause performance problems.
+------
+
+test> show dbs
+admin         100.00 KiB
+config         48.00 KiB
+local          72.00 KiB
+the_database   40.00 KiB
+test> use the_database
+switched to db the_database
+the_database> show collections
+todos
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('6a7afcbf7d2f46295abf719b'),
+    text: 'Write code',
+    done: true
+  },
+  {
+    _id: ObjectId('6a7afcbf7d2f46295abf719c'),
+    text: 'Learn about containers',
+    done: false
+  }
+]
+the_database> db.the_database.insertOne( {text: "Increase the number of tools in my tool belt", done: false} )
+{
+  acknowledged: true,
+  insertedId: ObjectId('6a7b132db0d41a9467f5b214')
+}
+the_database> db.the_todos.insertOne( {text: "Increase the number of tools in my tool belt", done: false} )
+{
+  acknowledged: true,
+  insertedId: ObjectId('6a7b1362b0d41a9467f5b215')
+}
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('6a7afcbf7d2f46295abf719b'),
+    text: 'Write code',
+    done: true
+  },
+  {
+    _id: ObjectId('6a7afcbf7d2f46295abf719c'),
+    text: 'Learn about containers',
+    done: false
+  }
+]
+the_database> db.todos.insertOne( {text: "Increase the number of tools in my tool belt", done: false} )
+{
+  acknowledged: true,
+  insertedId: ObjectId('6a7b13dcb0d41a9467f5b216')
+}
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('6a7afcbf7d2f46295abf719b'),
+    text: 'Write code',
+    done: true
+  },
+  {
+    _id: ObjectId('6a7afcbf7d2f46295abf719c'),
+    text: 'Learn about containers',
+    done: false
+  },
+  {
+    _id: ObjectId('6a7b13dcb0d41a9467f5b216'),
+    text: 'Increase the number of tools in my tool belt',
+    done: false
+  }
+]
+the_database> show collections
+the_database
+the_todos
+todos
+the_database> db.the_database.drop()
+true
+the_database> db.the_todos.drop()
+true
+the_database> show collections
+todos
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('6a7afcbf7d2f46295abf719b'),
+    text: 'Write code',
+    done: true
+  },
+  {
+    _id: ObjectId('6a7afcbf7d2f46295abf719c'),
+    text: 'Learn about containers',
+    done: false
+  },
+  {
+    _id: ObjectId('6a7b13dcb0d41a9467f5b216'),
+    text: 'Increase the number of tools in my tool belt',
+    done: false
+  }
+]
+the_database> 
